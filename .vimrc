@@ -1,5 +1,5 @@
 set nocompatible              " be iMproved, required
-filetype on                 " required
+filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -13,102 +13,97 @@ Plugin 'gmarik/Vundle.vim'
 " The following are examples of different formats supported.
 " Keep Plugin commands between vundle#begin/end.
 " plugin on GitHub repo
-"Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-fugitive'
 " plugin from http://vim-scripts.org/vim/scripts.html
 "Plugin 'L9'
 " Git plugin not hosted on GitHub
-"Plugin 'git://git.wincent.com/command-t.git'
+Plugin 'git://git.wincent.com/command-t'
+
+Plugin 'https://github.com/kien/ctrlp.vim'
 " git repos on your local machine (i.e. when working on your own plugin)
 "Plugin 'file:///home/gmarik/path/to/plugin'
 " The sparkup vim script is in a subdirectory of this repo called vim.
 " Pass the path to set the runtimepath properly.
-"Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " Avoid a name conflict with L9
 "Plugin 'user/L9', {'name': 'newL9'}
+"
+Plugin 'https://github.com/scrooloose/nerdtree'
+Plugin 'https://github.com/scrooloose/nerdcommenter'
+Plugin 'https://github.com/rosenfeld/rgrep.vim'
+Plugin 'https://github.com/Valloric/YouCompleteMe'
+Plugin 'https://github.com/bling/vim-airline'
+Plugin 'https://github.com/Townk/vim-autoclose'
 
-Plugin 'scrooloose/nerdtree'
-Plugin 'flazz/vim-colorschemes'
-Plugin 'scrooloose/syntastic'
-Plugin 'vim-scripts/L9'
-Plugin 'vim-scripts/FuzzyFinder'
-"Plugin 'wincent/command-t'
-
-"Plugin 'othree/html5.vim'
-"Plugin 'jelera/vim-javascript-syntax'
-Plugin 'Raimondi/delimitMate'
-" -- Web Development
-Plugin 'Shutnik/jshint2.vim'
-Plugin 'mattn/emmet-vim'            
-Plugin 'kchmck/vim-coffee-script'   
-Plugin 'groenewege/vim-less'        
-Plugin 'skammer/vim-css-color'      
-"Plugin 'hail2u/vim-css3-syntax'     
-"Plugin 'digitaltoad/vim-jade'  
+" colors
+Plugin 'https://github.com/nanotech/jellybeans.vim'
+Plugin 'https://github.com/hachy/eva01.vim'
+Plugin 'https://github.com/MPiccinato/wombat256'
+"Plugin 'https://github.com/nilium/vimrc'
+Plugin 'https://github.com/toupeira/vim-desertink'
+"Plugin 'https://github.com/freeo/vim-kalisi'
+Plugin 'https://github.com/vim-scripts/LustyExplorer'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-"
-set t_Co=256
+filetype plugin on
+
 syntax on
+set t_Co=256
 
-" indentation
-set expandtab       " use spaces instead of tabs
-set autoindent      " autoindent based on line above, works most of the time
-set smartindent     " smarter indent for C-like languages
-set shiftwidth=4    " when reading, tabs are 4 spaces
-set softtabstop=4   " in insert mode, tabs are 4 spaces
+"colorscheme eva01
+"colorscheme desert
 
-" no lines longer than 80 cols
-set textwidth=80
+"autocmd VimEnter * NERDTree
+"autocmd VimEnter * wincmd p   " move cursor
+
+set expandtab
+set tabstop=4
+set smartindent
+set shiftwidth=4
 
 " start NERDTree on start-up and focus active window
-autocmd VimEnter * NERDTree
-autocmd VimEnter * wincmd p
+"autocmd VimEnter * NERDTree
+"autocmd VimEnter * wincmd p
 " close vim if the only window left open is a NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 map <C-n> :NERDTreeToggle<CR>
- 
 
-"colorscheme jelleybeans
-colorscheme BlackSea
+"This option forces vim to source .vimrc file if it present in working directory, thus providing a place to store project-specific configuration.
+set exrc
+set secure
 
-" This does what it says on the tin. It will check your file on open too, not just on save.
-" You might not want this, so just leave it out if you don't.
-let g:syntastic_check_on_open=1
+let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
 
-let g:syntastic_cpp_compiler = 'clang++'
-let g:syntastic_cpp_compiler_options = ' -std=c++11 -stdlib=libc++'
+autocmd CompleteDone * pclose
 
-"au FileType javascript call JavaScriptFold()
-"autocmd Filetype javascript setlocal ts=2 sw=2 expandtab
-"autocmd Filetype html setlocal ts=2 sw=2 expandtab
+"CtrlP options
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
 
-set clipboard=unnamed
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
 
-" hide unnecessary gui in gVim
-if has("gui_running")
-    set guioptions-=m  " remove menu bar
-    set guioptions-=T  " remove toolbar
-    set guioptions-=r  " remove right-hand scroll bar
-    set guioptions-=L  " remove left-hand scroll bar
-end
+"let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll)$',
+  \ 'link': 'some_bad_symbolic_links',
+  \ }
+let g:ctrlp_user_command = 'find %s -type f'        " MacOSX/Linux
+let g:ctrlp_working_path_mode = 0
 
-" and set the mark color to DarkSlateGray
-highlight ColorColumn ctermbg=lightgray guibg=lightgray
+"set colorcolumn=100
+"highlight colorcolumn ctermbg=7
+"set cursorline
+set nowrap
 
-" close current buffer
-nmap ,d :b#<bar>bd#<CR>
+function! DeleteHiddenBuffers() 
+    let tpbl=[]
+    call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
+    for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
+        silent execute 'bwipeout' buf
+    endfor
+endfunction
 
-map <C-f> :FufFile<CR>
+set hidden
