@@ -44,6 +44,16 @@ Plugin 'https://github.com/toupeira/vim-desertink'
 "Plugin 'https://github.com/freeo/vim-kalisi'
 Plugin 'https://github.com/vim-scripts/LustyExplorer'
 
+
+"Bundle 'christoomey/vim-run-interactive'
+Plugin 'NLKNguyen/papercolor-theme'
+"Bundle "yearofmoo/Vim-Darkmate"
+"Bundle "morhetz/gruvbox"
+
+Plugin 'JesseKPhillips/d.vim'
+
+set background=dark
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -69,7 +79,9 @@ set shiftwidth=4
 " close vim if the only window left open is a NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 map <C-n> :NERDTreeToggle<CR>
+nmap ,n :NERDTreeFind<CR>
 
+let NERDTreeIgnore = ['\.pyc$']
 "This option forces vim to source .vimrc file if it present in working directory, thus providing a place to store project-specific configuration.
 set exrc
 set secure
@@ -96,9 +108,9 @@ let g:ctrlp_working_path_mode = 0
 "set colorcolumn=100
 "highlight colorcolumn ctermbg=7
 "set cursorline
-set nowrap
+"set nowrap
 
-function! DeleteHiddenBuffers() 
+function! DeleteHiddenBuffers()
     let tpbl=[]
     call map(range(1, tabpagenr('$')), 'extend(tpbl, tabpagebuflist(v:val))')
     for buf in filter(range(1, bufnr('$')), 'bufexists(v:val) && index(tpbl, v:val)==-1')
@@ -107,3 +119,21 @@ function! DeleteHiddenBuffers()
 endfunction
 
 set hidden
+
+"when you press <f4> you will be shown the list of buffers and prompted for the one to open
+map <F4> :ls<CR>:buffer<space>
+
+nmap <F7> :w<CR>:! cd ~/sources/cmake_proj/olympia/build && na
+
+nnoremap <leader>ri :RunInInteractiveShell<space>
+
+set nu
+
+"Enable Project settings
+set exrc
+set secure
+
+au FocusLost * silent! wa
+
+set rnu
+
