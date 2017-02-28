@@ -136,4 +136,4 @@ set secure
 au FocusLost * silent! wa
 
 set rnu
-
+let g:LustyExplorerSuppressRubyWarning = 1
