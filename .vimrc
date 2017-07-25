@@ -51,6 +51,14 @@ Plugin 'NLKNguyen/papercolor-theme'
 "Bundle "morhetz/gruvbox"
 
 Plugin 'JesseKPhillips/d.vim'
+Plugin 'rhysd/vim-clang-format'
+Plugin 'fatih/vim-go'
+
+Plugin 'chrissicool/zsh-256color'
+Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'flazz/vim-colorschemes'
+Plugin 'noah/vim256-color'
+
 
 set background=dark
 
@@ -63,7 +71,7 @@ syntax on
 set t_Co=256
 
 "colorscheme eva01
-"colorscheme desert
+colorscheme desert
 
 "autocmd VimEnter * NERDTree
 "autocmd VimEnter * wincmd p   " move cursor
@@ -137,3 +145,13 @@ au FocusLost * silent! wa
 
 set rnu
 let g:LustyExplorerSuppressRubyWarning = 1
+set clipboard=unnamedplus
+
+set t_Co=256
+
+"syntax match nonascii "[^\x00-\x7F]"
+"highlight nonascii guibg=Red ctermbg=2 
+
+"highlight nonascii guibg=Red ctermbg=1 term=standout
+"au BufReadPost * syntax match nonascii "[^\u0000-\u007F]"
+"
