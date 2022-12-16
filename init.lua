@@ -1,3 +1,9 @@
+--vim.opt.runtimepath:remove(vim.fn.expand('~/.config/nvim'))
+--vim.opt.packpath:remove(vim.fn.expand('~/.local/share/nvim/site'))
+--vim.opt.runtimepath:append(vim.fn.expand('~/projects/nvim-conf'))
+--vim.opt.packpath:append(vim.fn.expand('~/projects/nvim-conf'))
+
+
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -16,6 +22,10 @@ vim.opt.termguicolors = true
 vim.opt.updatetime = 300
 --vim.opt.signcolumn = "no"
 vim.o.cursorline = true
+vim.opt.clipboard = 'unnamedplus'
+vim.opt.swapfile = false
+vim.opt.scrolloff = 10 -- Make it so there are always ten lines below my cursor
+
 
 local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 local install_plugins = false
@@ -105,17 +115,17 @@ require('packer').startup(function(use)
         {"nvim-treesitter/nvim-treesitter"}
     }
   }
-  use { 'anuvyklack/pretty-fold.nvim',
-   config = function()
-      require('pretty-fold').setup()
-   end
-  }
+  --use { 'anuvyklack/pretty-fold.nvim',
+  -- config = function()
+  --    require('pretty-fold').setup()
+  -- end
+  --}
   use {
     'jedrzejboczar/toggletasks.nvim',
     requires = {
         'nvim-lua/plenary.nvim',
         'akinsho/toggleterm.nvim',
-        'nvim-telescope/telescope.nvim/',
+--        'nvim-telescope/telescope.nvim/',
     },
     -- To enable YAML config support
     rocks = 'lyaml',
@@ -133,10 +143,56 @@ require('packer').startup(function(use)
   --  }
   --}
 
+  -- use {
+  --   "windwp/nvim-autopairs"
+  --   --, config = function() require("nvim-autopairs").setup {} end
+  -- }
+  -- use { "terrortylor/nvim-comment", 
+  --   config = function() 
+  --     require('nvim_comment').setup() end
+  -- }
   use {
-    "windwp/nvim-autopairs",
-      config = function() require("nvim-autopairs").setup {} end
+    'numToStr/Comment.nvim',
+    config = function()
+        require('Comment').setup()
+    end
   }
+
+  use {
+    "folke/trouble.nvim",
+    requires = "kyazdani42/nvim-web-devicons",
+    config = function()
+      require("trouble").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
+  --use {'nvim-telescope/telescope-fzf-native.nvim', run = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+  use {
+    'pwntester/octo.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope.nvim',
+      'kyazdani42/nvim-web-devicons',
+    },
+    config = function ()
+      require"octo".setup()
+    end
+  }
+  use {
+    "AckslD/nvim-neoclip.lua",
+    requires = {
+      -- you'll need at least one of these
+      -- {'nvim-telescope/telescope.nvim'},
+      -- {'ibhagwan/fzf-lua'},
+    },
+    config = function()
+      require('neoclip').setup()
+    end,
+  }
+  use { "nvim-telescope/telescope-file-browser.nvim" }
 
   if install_plugins then
     require('packer').sync()
@@ -154,37 +210,37 @@ require('rose-pine').setup({
   dark_variant = 'moon'
 })
 
-require("vstask").setup({
-  cache_json_conf = false, -- don't read the json conf every time a task is ran
-  cache_strategy = "last", -- can be "most" or "last" (most used / last used)
-  use_harpoon = false, -- use harpoon to auto cache terminals
-  telescope_keys = { -- change the telescope bindings used to launch tasks
-      vertical = '<C-v>',
-      split = '<C-p>',
-      tab = '<C-t>',
-      current = '<CR>',
-  },
-  autodetect = { -- auto load scripts
-    npm = "on"
-  },
-  terminal = 'toggleterm',
-  term_opts = {
-    vertical = {
-      direction = "vertical",
-      size = "80"
-    },
-    horizontal = {
-      direction = "horizontal",
-      size = "10"
-    },
-    current = {
-      direction = "float",
-    },
-    tab = {
-      direction = 'tab',
-    }
-  }
-})
+-- require("vstask").setup({
+--   cache_json_conf = false, -- don't read the json conf every time a task is ran
+--   cache_strategy = "last", -- can be "most" or "last" (most used / last used)
+--   use_harpoon = false, -- use harpoon to auto cache terminals
+--   telescope_keys = { -- change the telescope bindings used to launch tasks
+--       vertical = '<C-v>',
+--       split = '<C-p>',
+--       tab = '<C-t>',
+--       current = '<CR>',
+--   },
+--   autodetect = { -- auto load scripts
+--     npm = "on"
+--   },
+--   terminal = 'toggleterm',
+--   term_opts = {
+--     vertical = {
+--       direction = "vertical",
+--       size = "80"
+--     },
+--     horizontal = {
+--       direction = "horizontal",
+--       size = "10"
+--     },
+--     current = {
+--       direction = "float",
+--     },
+--     tab = {
+--       direction = 'tab',
+--     }
+--   }
+-- })
 
 --require('overseer').setup()
 
@@ -220,7 +276,7 @@ require("nvim-tree").setup({
   open_on_setup = true,
   open_on_tab = true,
   view = {
-    adaptive_size = true,
+    adaptive_size = false,
     relativenumber = true
   },
   renderer = {
@@ -251,41 +307,60 @@ require("nvim-tree").setup({
 require("toggleterm").setup{}
 require("mason").setup()
 require("gitsigns").setup()
-require("refactoring").setup({
-  prompt_func_return_type = {
-    cpp = true,
-    c = true,
-    h = true,
-    hpp = true,
-    cxx = true
-  },
-  prompt_func_param_type = {
-    cpp = true,
-    c = true,
-    h = true,
-    hpp = true,
-    cxx = true
-  },
-})
+-- require("refactoring").setup({
+--   prompt_func_return_type = {
+--     cpp = true,
+--     c = true,
+--     h = true,
+--     hpp = true,
+--     cxx = true
+--   },
+--   prompt_func_param_type = {
+--     cpp = true,
+--     c = true,
+--     h = true,
+--     hpp = true,
+--     cxx = true
+--   },
+-- })
 
-require'nvim-treesitter.configs'.setup {
-  highlight = {
-    -- `false` will disable the whole extension
-    enable = true,
+ require'nvim-treesitter.configs'.setup {
+   highlight = {
+     enable = true,
+     additional_vim_regex_highlighting = false,
+   },
+ }
 
-    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-    -- Using this option may slow down your editor, and you may see some duplicate highlights.
-    -- Instead of true it can also be a list of languages
-    additional_vim_regex_highlighting = false,
-  },
-}
 
-require('toggletasks').setup({
-
-})
+-- require('toggletasks').setup({
+-- })
 require('telescope').load_extension('toggletasks')
+require('telescope').load_extension('neoclip')
+--require('telescope').load_extension('file_browser')
 
+require('Comment').setup({
+})
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+-- local remap = vim.api.nvim_set_keymap
+-- local npairs = require('nvim-autopairs')
+-- npairs.setup({map_cr=false})
+--
+-- -- skip it, if you use another global object
+-- _G.MUtils= {}
+--
+-- MUtils.completion_confirm=function()
+--   if vim.fn.pumvisible() ~= 0  then
+--     --return vim.fn[[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]]
+--     --return vim.fn["coc#pum#confirm"]()
+--     vim.fn["coc#_select_confirm"]()
+--   else
+--     return npairs.autopairs_cr()
+--   end
+-- end
+--remap('i' , '<CR>','v:lua.MUtils.completion_confirm()', {expr = true , noremap = true})
+--------------------
 
 function _G.set_terminal_keymaps()
   local opts = {buffer = 0}
@@ -302,17 +377,14 @@ end
 
 -- if you only want these mappings for toggle term use term://*toggleterm#* instead
 vim.cmd('autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()')
-vim.keymap.set({'n', 't'},'<leader>t', '<cmd>3ToggleTerm size=20 direction=float <cr>')
-vim.keymap.set({'n', 't'},'<leader>z', '<cmd>4ToggleTerm size=10 direction=float <cr>')
+vim.keymap.set({'n', 't'},'<leader>t', '<cmd>1ToggleTerm size=20 direction=float <cr>')
+--vim.keymap.set({'n', 't'},'<leader>z', '<cmd>4ToggleTerm size=10 direction=float <cr>')
 
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
-
---vim.keymap.set("n", "<leader>f", ":NvimTreeToggle<CR>", opts)
-
 
 local keyset = vim.keymap.set
 -- Auto complete
@@ -335,6 +407,7 @@ keyset("i", "<S-TAB>", [[coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"]], opts)
 -- <C-g>u breaks current undo, please make your own choice.
 keyset("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], opts)
 
+
 local function cmd(command)
   return table.concat({ '<Cmd>', command, '<CR>' })
 end
@@ -346,8 +419,8 @@ keyset('n', '<C-w>=', cmd 'WindowsEqualize')
 keyset('n', '<C-w>=', cmd 'WindowsEqualize')
 
 --nnoremap <silent> gb :BufferLinePick<CR>,
-keyset("n", "gb", cmd 'BufferLinePick' )
-keyset("n", "gD", cmd 'BufferLinePickClose' )
+keyset("n", "<leader>bb", cmd 'BufferLinePick' )
+keyset("n", "<leader>bd", cmd 'BufferLinePickClose' )
 keyset("n", "<C-k>", cmd 'BufferLineCycleNext' )
 keyset("n", "<C-j>", cmd 'BufferLineCyclePrev' )
 
@@ -368,7 +441,7 @@ keyset('n', '<F8>', cmd 'TagbarToggle')
 keyset('n', '<M-o>', cmd 'CocCommand clangd.switchSourceHeader') 
 
 -- testing
-keyset('n', '<leader>x', cmd "lua require('telescope.builtin').find_files({default_text='constraint'})<cr>")
+--keyset('n', '<leader>x', cmd "lua require('telescope.builtin').find_files({default_text='constraint'})<cr>")
 
 -- Symbol renaming.
 keyset("n", "<leader>rn", "<Plug>(coc-rename)", {silent = true})
@@ -410,10 +483,31 @@ keyset("n", "<leader>n", cmd "NvimTreeFindFile!")
 keyset("n", "<leader>v", cmd "NvimTreeToggle")
 
 
--- tasks
--- require("telescope").extensions.vstask.tasks(require('telescope.themes').get_dropdown()) -- open task list in telescope
-keyset("n", "<leader>ra", cmd "lua require('telescope').extensions.vstask.tasks(require('telescope.themes').get_dropdown())")
---keyset("n", "<Leader>ta", cmd "lua require('telescope').extensions.vstask.tasks()")
---nnoremap <Leader>ti :lua require("telescope").extensions.vstask.inputs()<CR>
---nnoremap <Leader>th :lua require("telescope").extensions.vstask.history()<CR>
---nnoremap <Leader>tl :lua require('telescope').extensions.vstask.launch()<cr>
+-- vs-tasks
+--keyset("n", "<leader>ra", cmd "lua require('telescope').extensions.vstask.tasks(require('telescope.themes').get_dropdown())")
+
+
+
+--Change comments to //
+-- function nvim_create_augroups(definitions)
+--     for group_name, definition in pairs(definitions) do
+--         vim.api.nvim_command("augroup " .. group_name)
+--         vim.api.nvim_command("autocmd!")
+--         for _, def in ipairs(definition) do
+--             local command = table.concat(vim.tbl_flatten({ "autocmd", def }), " ")
+--             vim.api.nvim_command(command)
+--         end
+--         vim.api.nvim_command("augroup END")
+--     end
+-- end
+--
+--
+-- local autocmds = {
+--   fix_commentstring = {
+--     {"Bufenter", "*.cpp,*.h", "set commentstring=//%s"}
+--   }
+-- }
+--
+-- nvim_create_augroups(autocmds)
+
+--vim.cmd('Gitsigns toggle_current_line_blame')
