@@ -1,9 +1,3 @@
---vim.opt.runtimepath:remove(vim.fn.expand('~/.config/nvim'))
---vim.opt.packpath:remove(vim.fn.expand('~/.local/share/nvim/site'))
---vim.opt.runtimepath:append(vim.fn.expand('~/projects/nvim-conf'))
---vim.opt.packpath:append(vim.fn.expand('~/projects/nvim-conf'))
-
-
 -- disable netrw at the very start of your init.lua (strongly advised)
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -25,7 +19,6 @@ vim.o.cursorline = true
 vim.opt.clipboard = 'unnamedplus'
 vim.opt.swapfile = false
 vim.opt.scrolloff = 10 -- Make it so there are always ten lines below my cursor
-
 
 local install_path = vim.fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
 local install_plugins = false
@@ -62,7 +55,7 @@ require('packer').startup(function(use)
     'rose-pine/neovim',
     as = 'rose-pine',
     config = function()
-      vim.cmd('colorscheme rose-pine')
+      --vim.cmd('colorscheme rose-pine')
     end
   })
   use "EdenEast/nightfox.nvim"
@@ -143,14 +136,14 @@ require('packer').startup(function(use)
   --  }
   --}
 
-  -- use {
-  --   "windwp/nvim-autopairs"
-  --   --, config = function() require("nvim-autopairs").setup {} end
-  -- }
-  -- use { "terrortylor/nvim-comment", 
-  --   config = function() 
-  --     require('nvim_comment').setup() end
-  -- }
+  use {
+    "windwp/nvim-autopairs"
+    , config = function() require("nvim-autopairs").setup {} end
+  }
+  use { "terrortylor/nvim-comment", 
+    config = function() 
+      require('nvim_comment').setup() end
+  }
   use {
     'numToStr/Comment.nvim',
     config = function()
@@ -194,6 +187,79 @@ require('packer').startup(function(use)
   }
   use { "nvim-telescope/telescope-file-browser.nvim" }
 
+  use({
+    "jackMort/ChatGPT.nvim",
+    config = function()
+      require("chatgpt").setup({
+        -- optional configuration
+      })
+    end,
+    requires = {
+      "MunifTanjim/nui.nvim",
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim"
+    }
+  })
+
+  -- use({
+  --   "epwalsh/obsidian.nvim",
+  --   config = function()
+  --     require("obsidian").setup({
+  --       use_advanced_uri = true,
+  --       dir = "~/vaults/dev/",
+  --       daily_notes = {
+  --         folder = "dailies",
+  --       },
+  --       -- completion = {
+  --       --   nvim_cmp = true,
+  --       -- },
+  --       note_id_func = function(title)
+  --         local sane_name = ""
+  --         if title ~= nil then
+  --           -- If title is given, transform it into valid file name.
+  --           sane_name = title:gsub(" ", "_"):gsub("[^A-Za-z0-9-]", ""):lower()
+  --         else
+  --           -- If title is nil, just add 4 random uppercase letters to the suffix.
+  --           for _ in 1, 4 do
+  --             sane_name = sane_name .. string.char(math.random(65, 90))
+  --           end
+  --         end
+  --         return sane_name
+  --       end,
+  --     })
+  --   end,
+  -- })
+
+  use { "ThePrimeagen/harpoon" }
+  use {'lervag/vimtex',
+    config = function() 
+      vim.cmd([[
+        let g:vimtex_view_method='zathura'
+        " let g:vimtex_view_general_viewer='zathura'
+        " let g:vimtex_view_enabled=1
+        " let g:vimtex_compiler_method='latexrun'
+        " let g:vimtex_quickfix_mode=0
+      ]])
+    end
+  }
+  use({
+    "iamcco/markdown-preview.nvim",
+    run = function() vim.fn["mkdp#util#install"]() end,
+  })
+
+  use {
+    "folke/which-key.nvim",
+    config = function()
+      vim.o.timeout = true
+      vim.o.timeoutlen = 300
+      require("which-key").setup {
+        -- your configuration comes here
+        -- or leave it empty to use the default settings
+        -- refer to the configuration section below
+      }
+    end
+  }
+
   if install_plugins then
     require('packer').sync()
   end
@@ -204,45 +270,15 @@ if install_plugins then
   return
 end
 
+-- vim.g.vimtex_view_method = 'zathura'
+
+
 --vim.cmd('colorscheme habamax')
 --vim.cmd('colorscheme rose-pine')
-require('rose-pine').setup({
-  dark_variant = 'moon'
-})
-
--- require("vstask").setup({
---   cache_json_conf = false, -- don't read the json conf every time a task is ran
---   cache_strategy = "last", -- can be "most" or "last" (most used / last used)
---   use_harpoon = false, -- use harpoon to auto cache terminals
---   telescope_keys = { -- change the telescope bindings used to launch tasks
---       vertical = '<C-v>',
---       split = '<C-p>',
---       tab = '<C-t>',
---       current = '<CR>',
---   },
---   autodetect = { -- auto load scripts
---     npm = "on"
---   },
---   terminal = 'toggleterm',
---   term_opts = {
---     vertical = {
---       direction = "vertical",
---       size = "80"
---     },
---     horizontal = {
---       direction = "horizontal",
---       size = "10"
---     },
---     current = {
---       direction = "float",
---     },
---     tab = {
---       direction = 'tab',
---     }
---   }
--- })
-
---require('overseer').setup()
+--require('rose-pine').setup({
+--  dark_variant = 'moon'
+--})
+vim.cmd('colorscheme duskfox')
 
 require("bufferline").setup{
   options = {
@@ -337,9 +373,12 @@ require("gitsigns").setup()
 require('telescope').load_extension('toggletasks')
 require('telescope').load_extension('neoclip')
 --require('telescope').load_extension('file_browser')
+require('telescope').load_extension('harpoon')
 
 require('Comment').setup({
 })
+
+
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -381,7 +420,7 @@ vim.keymap.set({'n', 't'},'<leader>t', '<cmd>1ToggleTerm size=20 direction=float
 --vim.keymap.set({'n', 't'},'<leader>z', '<cmd>4ToggleTerm size=10 direction=float <cr>')
 
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<leader>ff', builtin.git_files, {})
 vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
 vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
 vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
@@ -399,13 +438,16 @@ end
 -- NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
 -- other plugin before putting this into your config.
 local opts = {silent = true, noremap = true, expr = true, replace_keycodes = false}
-keyset("i", "<TAB>", 'coc#pum#visible() ? coc#pum#next(1) : v:lua.check_back_space() ? "<TAB>" : coc#refresh()', opts)
-keyset("i", "<S-TAB>", [[coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"]], opts)
+-- keyset("i", "<TAB>", 'coc#pum#visible() ? coc#pum#next(1) : v:lua.check_back_space() ? "<TAB>" : coc#refresh()', opts)
+-- keyset("i", "<S-TAB>", [[coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"]], opts)
+keyset("i", "<C-n>", 'coc#pum#visible() ? coc#pum#next(1) : v:lua.check_back_space() ? "<C-n>" : coc#refresh()', opts)
+keyset("i", "<C-p>", [[coc#pum#visible() ? coc#pum#prev(1) : "\<C-h>"]], opts)
 
 
 -- Make <CR> to accept selected completion item or notify coc.nvim to format
 -- <C-g>u breaks current undo, please make your own choice.
-keyset("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], opts)
+-- keyset("i", "<cr>", [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], opts)
+keyset("i", "<C-y>", [[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]], opts)
 
 
 local function cmd(command)
@@ -443,7 +485,6 @@ keyset('n', '<M-o>', cmd 'CocCommand clangd.switchSourceHeader')
 -- testing
 --keyset('n', '<leader>x', cmd "lua require('telescope.builtin').find_files({default_text='constraint'})<cr>")
 
--- Symbol renaming.
 keyset("n", "<leader>rn", "<Plug>(coc-rename)", {silent = true})
 -- Formatting selected code.
 keyset({"x","n"}, "<leader>f", "<Plug>(coc-format-selected)", {silent = true})
@@ -483,8 +524,16 @@ keyset("n", "<leader>n", cmd "NvimTreeFindFile!")
 keyset("n", "<leader>v", cmd "NvimTreeToggle")
 
 
--- vs-tasks
---keyset("n", "<leader>ra", cmd "lua require('telescope').extensions.vstask.tasks(require('telescope.themes').get_dropdown())")
+
+local mark = require("harpoon.mark")
+local ui = require("harpoon.ui")
+vim.keymap.set("n", "<leader>a", mark.add_file)
+vim.keymap.set("n", "<C-e>", ui.toggle_quick_menu)
+vim.keymap.set("n", "<C-h>", function() ui.nav_file(1) end)
+vim.keymap.set("n", "<C-t>", function() ui.nav_file(2) end)
+-- vim.keymap.set("n", "<C-n>", function() ui.nav_file(3) end)
+-- vim.keymap.set("n", "<C-s>", function() ui.nav_file(4) end)
+
 
 
 
